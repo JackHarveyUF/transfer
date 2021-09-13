@@ -1,0 +1,1058 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Clean Street Toolkit</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width">
+    <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
+    <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto+Slab:400,100,300,700">
+    <link rel="stylesheet" type="text/css" href="clean.css">
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+    <script type="text/javascript" src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+    <!-- <link href="https://api.mapbox.com/mapbox-gl-js/v2.1.1/mapbox-gl.css" rel="stylesheet">
+    <script src="https://api.mapbox.com/mapbox-gl-js/v2.1.1/mapbox-gl.js"></script> -->
+    <script src="clean.js" type="text/javascript"></script>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+
+    
+
+
+  </head> 
+      <body data-spy="scroll" data-target="#navbar-example">
+          <script>
+                //Swansea
+                //JS Functions
+                var toLoad = "./toCSVTrans.json";
+                var submitted = "";
+                var arrayy;
+                var cityInfo=[];
+                fileStatusArr = [];
+                var keys;
+                
+
+                async function processData(){
+                    console.log("process data");
+
+                    
+                    //BlueBadge();
+                    keys.forEach(key=>{
+                        test = document.getElementById(key);
+                        fileStatusArr[test.value] = test.checked;
+                        console.log(test.value);
+                        console.log(test.checked);
+                    });
+                    if (fileStatusArr["BlueBadge.json"] == true){
+                        BlueBadge();
+                    }
+                    if (fileStatusArr["cityPopEV.json"] == true){
+                        cityPopEV();
+                    }
+                    if (fileStatusArr["durhamCarParks.json"] == true){
+                        durhamCarParks();
+                    }
+                    if (fileStatusArr["GBLayer.json"] == true){
+                        GBLayer();
+                    }
+                    if (fileStatusArr["HouseholdActivity.json"] == true){
+                        HouseholdActivity();
+                    }
+                    if (fileStatusArr["Working Houses"] == true){
+                        workingHouses();
+                    }
+                    if (fileStatusArr["Mixed Houses"] == true){
+                        mixedHouses();
+                    }
+                    if (fileStatusArr["Workless Houses"] == true){
+                        worklessHouses();
+                    }
+                    if (fileStatusArr["Stops.json"] == true){
+                        Stops();
+                    }
+                    if (fileStatusArr["TrafficCount.json"] == true){
+                        TrafficCount();
+                    }
+                    if (fileStatusArr["vehicleTypeCountByPostCodeArea.json"] == true){
+                        vehicleTypeCountByPostCodeArea();
+                    }
+                    if (fileStatusArr["CarCount"] == true){
+                        CarCount();
+                    }
+                    if (fileStatusArr["MotorcyleCount"] == true){
+                        MotorcyleCount();
+                    }
+                    if (fileStatusArr["walkingCyclingData.json"] == true){
+                        walkingCyclingData();
+                    }
+                    if (fileStatusArr["Air Ports"] == true){
+                        AIR();
+                    }
+                    if (fileStatusArr["Bus Stops"] == true){
+                        BCT();
+                    }
+                    if (fileStatusArr["Ferry Ports"] == true){
+                        FTD();
+                    }
+                    if (fileStatusArr["Metro Stations"] == true){
+                        MET();
+                    }
+                    if (fileStatusArr["Rail Stations"] == true){
+                        RSE();
+                    }
+                    if (fileStatusArr["Taxi Ranks"] == true){
+                        TXR();
+                    }
+                    
+                  
+                    window.location.href = "#section2";
+                }
+
+                function initDataLoadStatus(){
+                    //go through each file in data getting their name and file name this should be possible server side, but not possible client side 
+                    //hard coded to carry on 
+                    fileStatusArr["BlueBadge.json"] = false;
+                    fileStatusArr["cityPopEV.json"] = false;
+                    fileStatusArr["durhamCarParks.json"] = false;
+                    fileStatusArr["GBLayer.json"] = false;
+                    fileStatusArr["HouseholdActivity.json"] = false;
+                    fileStatusArr["Working Houses"] = false;
+                    fileStatusArr["Mixed Houses"] = false;
+                    fileStatusArr["Workless Houses"] = false;
+                    fileStatusArr["Stops.json"] = false;
+                    fileStatusArr["TrafficCount.json"] = false;
+                    fileStatusArr["vehicleTypeCountByPostCodeArea.json"] = false;
+                    fileStatusArr["CarCount"] = false;
+                    fileStatusArr["MotorcyleCount"] = false;
+                    fileStatusArr["walkingCyclingData.json"] = false;
+                    fileStatusArr["Air Ports"] = false;
+                    fileStatusArr["Bus Stops"] = false;
+                    fileStatusArr["Ferry Ports"] = false;
+                    fileStatusArr["Metro Stations"] = false;
+                    fileStatusArr["Rail Stations"] = false;
+                    fileStatusArr["Taxi Ranks"] = false;
+
+                    keys = Object.keys(fileStatusArr);
+
+                }
+                initDataLoadStatus();
+
+                function createDropDown (){
+                    var c = 0;
+                    var container = document.getElementById("checkboxList");
+
+                    keys.forEach(file => {
+    
+                        var checkbox = document.createElement('input');
+                        checkbox.type = 'checkbox';
+                        checkbox.name = keys[c];
+                        checkbox.id = keys[c];
+                        checkbox.value = keys[c]
+
+                        var label = document.createElement('label');
+                        label.innerHTML  = keys[c];
+
+                        var br = document.createElement('br');                 
+                        container.appendChild(checkbox);
+                        container.appendChild(label);
+                        container.appendChild(br);
+                        c++;
+                    });
+                    var submit = document.createElement('input');
+                    submit.type = "submit";
+                    submit.value = "Submit";
+                    submit.addEventListener("click", processData);
+                    container.appendChild(submit);
+                }
+                
+
+                function searchArray(searched, arrayIn){
+                    var leng = arrayIn.length;
+                    var c = 0;
+                    while (c < leng){
+                        if (arrayIn[c].CityName == searched){
+                            return c
+                        }
+                        c++;
+                    }
+                }
+                function getSubmitted(){
+                    
+                    submitted = document.getElementById('citySearch').value;
+                    console.log("submitted = "+submitted);
+                    var cityIndex = searchArray(submitted, arrayy);
+                    cityName = arrayy[cityIndex].CityName;
+                    window.location.href = '#optionMenu';  
+                        /*
+                    commercialULEV = arrayy[cityIndex].CommercialULEV;
+                    curBEV = arrayy[cityIndex].CurBEV;
+                    curULEV = arrayy[cityIndex].CurULEV;
+                    curULEVPercent = arrayy[cityIndex].CurULEVPercent;
+                    population = arrayy[cityIndex].Population;
+                    privULEV = arrayy[cityIndex].PrivULEV;
+                    residentialProperties = arrayy[cityIndex].ResidentialProperties;
+                    totalBEVs2045 = arrayy[cityIndex].TotalBEVs2045;
+                    totalULEVs2045 = arrayy[cityIndex].TotalULEVs2045;
+                    percentPropertiesTenements = arrayy[cityIndex].percentPropertiesTenements;
+                    cityInfo.push( cityName, commercialULEV, curBEV, curULEV, curULEVPercent, population, privULEV, residentialProperties, totalBEVs2045, totalULEVs2045, percentPropertiesTenements);
+                    viz();*/
+                }
+                function viz(){
+                    window.location.href = '#optionMenu';
+                    
+                    var arLen =  cityInfo.length;
+                    var i = 1;
+                    var output = "";
+                    //outut = cityInfo[0];
+                    
+                    //   while (i < arLen){
+                    //       output = output + " " + 
+                    //     i++;
+                    //   }
+                        output = output + "LA Name: " + cityInfo[0] + "</br>";
+                        output = output + "Commercial ULEVs: " + cityInfo[1] + "</br>";
+                        output = output + "Cur BEVs: " + cityInfo[2] + "</br>";
+                        output = output + "Cur ULEVs: " + cityInfo[3] + "</br>";
+                        output = output + "Cur ULEV Percentage: " + cityInfo[4] + "</br>";
+                        output = output + "Population: " + cityInfo[5] + "</br>";
+                        output = output + "Priv ULEV: " + cityInfo[6] + "</br>";
+                        output = output + "Residential Properties: " + cityInfo[7] + "</br>";
+                        output = output + "Total BEVs 2045: " + cityInfo[8] + "</br>";
+                        output = output + "Total ULEVs 2045: " + cityInfo[9] + "</br>";
+                        output = output + "Percentage Properties Tenements: " + cityInfo[10] + "</br>";
+
+                    document.getElementById("infoOutput").innerHTML = output;
+                }
+                function getData(){
+                    window.location.href='#selectDataCompare';
+                    submitted = document.getElementById('citySearch').value;
+
+                }
+              
+ 
+                //start JS
+                
+                fetch(toLoad)
+                        .then(function(resp){                       
+                            return resp.json();
+                        })
+                        .then(function(resp2){
+                            //console.log(resp2.Cities);
+                            arrayy = resp2.Cities;
+                        })
+
+                function mergeJson(json1, json2, primaryKey, foreignKey){
+                    const merged = [];
+                    json1.some(obj1 =>
+                        {
+                            var obj1MergedBool = false;
+                            json2.some(obj2 => {
+                                if (obj1.properties[primaryKey] == obj2[foreignKey]){
+                                    merged.push(Object.assign(obj1, obj2));
+                                    obj1MergedBool = true;
+                                }
+                            })
+                            if (obj1MergedBool == false){
+                                merged.push(obj1);
+                            }
+                        }
+                    )
+                    return merged;
+                }
+                
+
+                async function cityPopEV(){ 
+                    const BB = await fetch("./data/cityPopEV.json").then(
+                        function (resp){
+                            return resp.json();
+                        }
+                    );
+                    const GB = await fetch("./data/GBLayer.json").then(
+                        function (resp){
+                            return resp.json();
+                        }
+                    );
+                    const GBF = GB.features;
+                    console.log(BB);
+                    console.log(GBF);
+
+                    var jsonsMerged = mergeJson(GBF, BB, "LAD13NM", "CityName");
+                    console.log(jsonsMerged);
+
+                    function getColour(d) {
+                        return d > 500000 ? '#800026' :
+                            d > 400000  ? '#BD0026' :
+                            d > 300000  ? '#E31A1C' :
+                            d > 200000 ? '#FC4E2A' :
+                            d > 100000   ? '#FD8D3C' :
+                            d > 50000   ? '#FEB24C' :
+                            d > 25000   ? '#FED976' :
+                                        '#FFEDA0';
+                    }
+
+                    const style = (feature => {
+                        return ({
+                            fillColor: getColour(feature.Population),
+                            weight: 1,
+                            opacity: 1,
+                            color: 'black',
+                            dashArray: '2',
+                            fillOpacity: 0.5
+                        });
+                    });
+
+                    const feature = jsonsMerged.map(feature=>{
+                        return(feature);
+                    });
+                    geojson = L.geoJson(feature, {style: style});
+
+                    controls.addOverlay(geojson, "City Pop");
+                } 
+                
+                async function durhamCarParks(){
+                    const BB = await fetch("./data/durhamCarParks.json").then(
+                        function (resp){
+                            return resp.json();
+                        }
+                    );
+                    var group = L.layerGroup();
+                    BB.forEach(mark => {
+                        var marker = L.circleMarker ([mark.LAT,mark.LONG]);
+                        marker.setStyle({
+                            radius: 7,
+                            fillOpacity: 1,
+                            fillColor: '#00008b',
+                            color: '#ddd',
+                            weight: 0.25
+                        });   
+                        group.addLayer(marker);                   
+                    });
+                    
+                    controls.addOverlay(group, "Durham Car Parks");
+                }  
+
+                async function HouseholdActivity(){
+                    const BB = await fetch("./data/HouseholdActivity.json").then(
+                        function (resp){
+                            return resp.json();
+                        }
+                    );
+                    const GB = await fetch("./data/GBLayer.json").then(
+                        function (resp){
+                            return resp.json();
+                        }
+                    );
+                    const GBF = GB.features;
+                    console.log(BB);
+                    console.log(GBF);
+
+                    var jsonsMerged = mergeJson(GBF, BB, "LAD13CD", "Code");
+                    console.log(jsonsMerged);
+
+                    function getColour(d) {
+                        return d > 200000 ? '#800026' :
+                            d > 150000  ? '#BD0026' :
+                            d > 110000  ? '#E31A1C' :
+                            d > 80000 ? '#FC4E2A' :
+                            d > 50000   ? '#FD8D3C' :
+                            d > 25000   ? '#FEB24C' :
+                            d > 10000   ? '#FED976' :
+                                        '#FFEDA0';
+                    }
+
+                    const style = (feature => {
+                        return ({
+                            fillColor: getColour(feature.AllHouseholds),
+                            weight: 1,
+                            opacity: 1,
+                            color: 'black',
+                            dashArray: '2',
+                            fillOpacity: 0.5
+                        });
+                    });
+
+                    const feature = jsonsMerged.map(feature=>{
+                        return(feature);
+                    });
+
+                    geojson = L.geoJson(feature, {style: style});
+
+                    controls.addOverlay(geojson, "Total House Holds");
+                }  
+
+                async function mixedHouses(){
+                    const BB = await fetch("./data/HouseholdActivity.json").then(
+                        function (resp){
+                            return resp.json();
+                        }
+                    );
+                    const GB = await fetch("./data/GBLayer.json").then(
+                        function (resp){
+                            return resp.json();
+                        }
+                    );
+                    const GBF = GB.features;
+                    console.log(BB);
+                    console.log(GBF);
+
+                    var jsonsMerged = mergeJson(GBF, BB, "LAD13CD", "Code");
+                    console.log(jsonsMerged);
+
+                    function getColour(d) {
+                        return d > 200000 ? '#800026' :
+                            d > 150000  ? '#BD0026' :
+                            d > 110000  ? '#E31A1C' :
+                            d > 80000 ? '#FC4E2A' :
+                            d > 50000   ? '#FD8D3C' :
+                            d > 25000   ? '#FEB24C' :
+                            d > 10000   ? '#FED976' :
+                                        '#FFEDA0';
+                    }
+
+                    const style = (feature => {
+                        return ({
+                            fillColor: getColour(feature.Mixed),
+                            weight: 1,
+                            opacity: 1,
+                            color: 'black',
+                            dashArray: '2',
+                            fillOpacity: 0.5
+                        });
+                    });
+
+                    const feature = jsonsMerged.map(feature=>{
+                        return(feature);
+                    });
+
+                    geojson = L.geoJson(feature, {style: style});
+
+                    controls.addOverlay(geojson, "Mixed House Holds");
+                }  
+
+                async function worklessHouses(){
+                    const BB = await fetch("./data/HouseholdActivity.json").then(
+                        function (resp){
+                            return resp.json();
+                        }
+                    );
+                    const GB = await fetch("./data/GBLayer.json").then(
+                        function (resp){
+                            return resp.json();
+                        }
+                    );
+                    const GBF = GB.features;
+                    console.log(BB);
+                    console.log(GBF);
+
+                    var jsonsMerged = mergeJson(GBF, BB, "LAD13CD", "Code");
+                    console.log(jsonsMerged);
+
+                    function getColour(d) {
+                        return d > 200000 ? '#800026' :
+                            d > 150000  ? '#BD0026' :
+                            d > 110000  ? '#E31A1C' :
+                            d > 80000 ? '#FC4E2A' :
+                            d > 50000   ? '#FD8D3C' :
+                            d > 25000   ? '#FEB24C' :
+                            d > 10000   ? '#FED976' :
+                                        '#FFEDA0';
+                    }
+
+                    const style = (feature => {
+                        return ({
+                            fillColor: getColour(feature.Workless),
+                            weight: 1,
+                            opacity: 1,
+                            color: 'black',
+                            dashArray: '2',
+                            fillOpacity: 0.5
+                        });
+                    });
+
+                    const feature = jsonsMerged.map(feature=>{
+                        return(feature);
+                    });
+
+                    geojson = L.geoJson(feature, {style: style});
+
+                    controls.addOverlay(geojson, "Workless House Holds");
+                }  
+
+                async function workingHouses(){
+                    const BB = await fetch("./data/HouseholdActivity.json").then(
+                        function (resp){
+                            return resp.json();
+                        }
+                    );
+                    const GB = await fetch("./data/GBLayer.json").then(
+                        function (resp){
+                            return resp.json();
+                        }
+                    );
+                    const GBF = GB.features;
+                    console.log(BB);
+                    console.log(GBF);
+
+                    var jsonsMerged = mergeJson(GBF, BB, "LAD13CD", "Code");
+                    console.log(jsonsMerged);
+
+                    function getColour(d) {
+                        return d > 200000 ? '#800026' :
+                            d > 150000  ? '#BD0026' :
+                            d > 110000  ? '#E31A1C' :
+                            d > 80000 ? '#FC4E2A' :
+                            d > 50000   ? '#FD8D3C' :
+                            d > 25000   ? '#FEB24C' :
+                            d > 10000   ? '#FED976' :
+                                        '#FFEDA0';
+                    }
+
+                    const style = (feature => {
+                        return ({
+                            fillColor: getColour(feature.Working),
+                            weight: 1,
+                            opacity: 1,
+                            color: 'black',
+                            dashArray: '2',
+                            fillOpacity: 0.5
+                        });
+                    });
+
+                    const feature = jsonsMerged.map(feature=>{
+                        return(feature);
+                    });
+
+                    geojson = L.geoJson(feature, {style: style});
+
+                    controls.addOverlay(geojson, "Working House Holds");
+                }  
+                async function Stops(){  }  
+
+                async function TrafficCount(){  }  
+
+                async function CarCount(){ 
+                    const BB = await fetch("./data/vehicleTypeJSON.json").then(
+                        function (resp){
+                            return resp.json();
+                        }
+                    );
+                    const GB = await fetch("./data/GBLayer.json").then(
+                        function (resp){
+                            return resp.json();
+                        }
+                    );
+                    const GBF = GB.features;
+                    console.log(BB);
+                    console.log(GBF);
+
+                    var jsonsMerged = mergeJson(GBF, BB, "LAD13CD", "ONSCode");
+                    console.log(jsonsMerged);
+
+                    function getColour(d) {
+                        return d > 200000 ? '#800026' :
+                            d > 150000  ? '#BD0026' :
+                            d > 110000  ? '#E31A1C' :
+                            d > 80000 ? '#FC4E2A' :
+                            d > 50000   ? '#FD8D3C' :
+                            d > 25000   ? '#FEB24C' :
+                            d > 10000   ? '#FED976' :
+                                        '#FFEDA0';
+                    }
+
+                    const style = (feature => {
+                        return ({
+                            fillColor: getColour(feature.Cars),
+                            weight: 1,
+                            opacity: 1,
+                            color: 'black',
+                            dashArray: '2',
+                            fillOpacity: 0.5
+                        });
+                    });
+
+                    const feature = jsonsMerged.map(feature=>{
+                        return(feature);
+                    });
+
+                    geojson = L.geoJson(feature, {style: style});
+
+                    controls.addOverlay(geojson, "Car Count P/region");
+                 }  
+
+                async function MotorcyleCount(){ 
+                    const BB = await fetch("./data/vehicleTypeJSON.json").then(
+                        function (resp){
+                            return resp.json();
+                        }
+                    );
+                    const GB = await fetch("./data/GBLayer.json").then(
+                        function (resp){
+                            return resp.json();
+                        }
+                    );
+                    const GBF = GB.features;
+                    console.log(BB);
+                    console.log(GBF);
+
+                    var jsonsMerged = mergeJson(GBF, BB, "LAD13CD", "ONSCode");
+                    console.log(jsonsMerged);
+
+                    function getColour(d) {
+                        return d > 21000 ? '#800026' :
+                            d > 19000  ? '#BD0026' :
+                            d > 15000  ? '#E31A1C' :
+                            d > 11000 ? '#FC4E2A' :
+                            d > 7000   ? '#FD8D3C' :
+                            d > 3000   ? '#FEB24C' :
+                            d > 1000   ? '#FED976' :
+                                        '#FFEDA0';
+                    }
+
+                    const style = (feature => {
+                        return ({
+                            fillColor: getColour(feature.Motorcycles),
+                            weight: 1,
+                            opacity: 1,
+                            color: 'black',
+                            dashArray: '2',
+                            fillOpacity: 0.5
+                        });
+                    });
+
+                    const feature = jsonsMerged.map(feature=>{
+                        return(feature);
+                    });
+
+                    geojson = L.geoJson(feature, {style: style});
+
+                    controls.addOverlay(geojson, "Motorcyle Count P/region");
+                }  
+                
+                async function walkingCyclingData(){
+                    const BB = await fetch("./data/walkingCyclingData.json").then(
+                        function (resp){
+                            return resp.json();
+                        }
+                    );
+                    const GB = await fetch("./data/GBLayer.json").then(
+                        function (resp){
+                            return resp.json();
+                        }
+                    );
+                    const GBF = GB.features;
+                    console.log(BB);
+                    console.log(GBF);
+
+                    var jsonsMerged = mergeJson(GBF, BB, "LAD13CD", "geographyCode");
+                    console.log(jsonsMerged);
+
+                    function getColour(d) {
+                        return d > 60 ? '#800026' :
+                            d > 50  ? '#BD0026' :
+                            d > 45  ? '#E31A1C' :
+                            d > 40 ? '#FC4E2A' :
+                            d > 30   ? '#FD8D3C' :
+                            d > 20   ? '#FEB24C' :
+                            d > 10   ? '#FED976' :
+                                        '#FFEDA0';
+                    }
+
+                    const style = (feature => {
+                        return ({
+                            fillColor: getColour(feature.Any_walking_or_cycling_3pw),
+                            weight: 1,
+                            opacity: 1,
+                            color: 'black',
+                            dashArray: '2',
+                            fillOpacity: 0.5
+                        });
+                    });
+
+                    const feature = jsonsMerged.map(feature=>{
+                        return(feature);
+                    });
+
+                    geojson = L.geoJson(feature, {style: style});
+
+                    controls.addOverlay(geojson, "Walking Cycling");
+                  }  
+                
+                async function BlueBadge(){
+                    console.log("BB");
+                    const BB = await fetch("./data/BlueBadge.json").then(
+                        function (resp){
+                            return resp.json();
+                        }
+                    );
+                    const GB = await fetch("./data/GBLayer.json").then(
+                        function (resp){
+                            return resp.json();
+                        }
+                    );
+                    const GBF = GB.features;
+                    //console.log(BB);
+                    //console.log(GBF);
+
+                    var jsonsMerged = mergeJson(GBF, BB, "LAD13CD", "ONSCode");
+                    
+                    function getColour(d) {
+                        return d > 21000 ? '#800026' :
+                            d > 19000  ? '#BD0026' :
+                            d > 15000  ? '#E31A1C' :
+                            d > 11000 ? '#FC4E2A' :
+                            d > 7000   ? '#FD8D3C' :
+                            d > 3000   ? '#FEB24C' :
+                            d > 1000   ? '#FED976' :
+                                        '#FFEDA0';
+                    }
+                    const style = (feature => {
+                        return ({
+                            fillColor: getColour(feature.TotalBBIssued),
+                            weight: 1,
+                            opacity: 1,
+                            color: 'black',
+                            dashArray: '2',
+                            fillOpacity: 0.5
+                        });
+                    });
+                    const feature = jsonsMerged.map(feature=>{
+                        return(feature);
+                    });
+                    
+                   
+                    //console.log(feature);
+                    
+                    geojson = L.geoJson(feature, {style: style});
+                    controls.addOverlay(geojson, "Blue Badges");
+
+
+                }      
+                
+                async function AIR(){
+                    const BB = await fetch("./data/Stops.json").then(
+                        function (resp){
+                            return resp.json();
+                        }
+                    );
+                    air = BB.filter(stop => stop.StopType === 'AIR')
+                    var group = L.layerGroup();
+                    air.forEach(mark => {
+                        var marker = L.circleMarker ([mark.Latitude,mark.Longitude]);
+                        marker.setStyle({
+                            radius: 7,
+                            fillOpacity: 1,
+                            fillColor: '#00008b',
+                            color: '#ddd',
+                            weight: 0.25
+                        });   
+                        group.addLayer(marker);                   
+                    });
+                    
+                    controls.addOverlay(group, "Air Ports");
+                }  
+            
+                async function BCT(){
+                    const BB = await fetch("./data/Stops.json").then(
+                        function (resp){
+                            return resp.json();
+                        }
+                    );
+                    bus = BB.filter(stop => stop.StopType === 'BCT')
+                    var group = L.layerGroup();
+                    bus.forEach(mark => {
+                        var marker = L.circleMarker ([mark.Latitude,mark.Longitude]);
+                        marker.setStyle({
+                            radius: 7,
+                            fillOpacity: 1,
+                            fillColor: '#00008b',
+                            color: '#ddd',
+                            weight: 0.25
+                        });   
+                        group.addLayer(marker);                   
+                    });
+                    
+                    controls.addOverlay(group, "Buses");
+                }  
+
+                async function FTD(){
+                    const BB = await fetch("./data/Stops.json").then(
+                        function (resp){
+                            return resp.json();
+                        }
+                    );
+                    bus = BB.filter(stop => stop.StopType === 'FTD')
+                    var group = L.layerGroup();
+                    bus.forEach(mark => {
+                        var marker = L.circleMarker ([mark.Latitude,mark.Longitude]);
+                        marker.setStyle({
+                            radius: 7,
+                            fillOpacity: 1,
+                            fillColor: '#00008b',
+                            color: '#ddd',
+                            weight: 0.25
+                        });   
+                        group.addLayer(marker);                   
+                    });
+                    
+                    controls.addOverlay(group, "Ferry Ports");
+                }  
+
+                async function MET(){
+                    const BB = await fetch("./data/Stops.json").then(
+                        function (resp){
+                            return resp.json();
+                        }
+                    );
+                    bus = BB.filter(stop => stop.StopType === 'MET')
+                    var group = L.layerGroup();
+                    bus.forEach(mark => {
+                        var marker = L.circleMarker ([mark.Latitude,mark.Longitude]);
+                        marker.setStyle({
+                            radius: 7,
+                            fillOpacity: 1,
+                            fillColor: '#00008b',
+                            color: '#ddd',
+                            weight: 0.25
+                        });   
+                        group.addLayer(marker);                   
+                    });
+                    
+                    controls.addOverlay(group, "Metro Stops");
+                }  
+
+                async function RSE(){
+                    const BB = await fetch("./data/Stops.json").then(
+                        function (resp){
+                            return resp.json();
+                        }
+                    );
+                    bus = BB.filter(stop => stop.StopType === 'RSE')
+                    var group = L.layerGroup();
+                    bus.forEach(mark => {
+                        var marker = L.circleMarker ([mark.Latitude,mark.Longitude]);
+                        marker.setStyle({
+                            radius: 7,
+                            fillOpacity: 1,
+                            fillColor: '#00008b',
+                            color: '#ddd',
+                            weight: 0.25
+                        });   
+                        group.addLayer(marker);                   
+                    });
+                    
+                    controls.addOverlay(group, "Train Stations");
+                }  
+
+                async function TXR(){
+                    const BB = await fetch("./data/Stops.json").then(
+                        function (resp){
+                            return resp.json();
+                        }
+                    );
+                    bus = BB.filter(stop => stop.StopType === 'TXR')
+                    var group = L.layerGroup();
+                    bus.forEach(mark => {
+                        var marker = L.circleMarker ([mark.Latitude,mark.Longitude]);
+                        marker.setStyle({
+                            radius: 7,
+                            fillOpacity: 1,
+                            fillColor: '#00008b',
+                            color: '#ddd',
+                            weight: 0.25
+                        });   
+                        group.addLayer(marker);                   
+                    });
+                    
+                    controls.addOverlay(group, "Taxi Ranks");
+                }  
+
+
+          </script>
+
+
+        <div class="wrapper" >
+
+          <nav class="nav__wrapper" id="navbar-example">
+            <ul class="nav">
+
+              <li role="presentation" class="active">
+                <a href="#section1">
+                  <span class="nav__counter">01</span>
+                  <h3 class="nav__title">Home</h3>
+                  <p class="nav__body">Some Info/Start with your area of interest.</p>
+
+                </a>
+              </li>
+
+              <li role="presentation">
+                <a href="#optionMenu">
+                  <span class="nav__counter"> 02 What do you want to do? </span>
+<!--                   <h3 class="nav__title">Section 5 Title</h3> -->
+                  <p class="nav__body">Choose what to do with your city.</p>
+                </a>
+              </li>
+
+              <li role="presentation">
+                <a href="#section2">
+                  <span class="nav__counter">03 Get an Overview</span>
+<!--                   <h3 class="nav__title">Section 2 Title</h3> -->
+                  <p class="nav__body"><strong>Timeline-style navigation</strong>. Scroll down to see what happens, or click on a number in the nav.</p>
+                </a>
+              </li>
+
+              <li role="presentation">
+                <a href="#section3">
+                  <span class="nav__counter">04 Choose Your Scenario</span>
+<!--                   <h3 class="nav__title">Section 3 Title</h3> -->
+                  <p class="nav__body">Sed sit amet justo sed odio tempus tempus. Vestibulum sed varius mi, sit amet condimentum lacus.</p>
+                </a>
+              </li>
+              
+              <li role="presentation">
+                <a href="#section4">
+                  <span class="nav__counter">05 Decide on Types of Hubs</span>
+<!--                   <h3 class="nav__title">Section 4 Title</h3> -->
+                  <p class="nav__body">Sed sit amet justo sed odio tempus tempus. Vestibulum sed varius mi, sit amet condimentum lacus.</p>
+                </a>
+              </li>
+              
+              <li role="presentation">
+                <a href="#section5">
+                  <span class="nav__counter">06 Download Your Report </span>
+<!--                   <h3 class="nav__title">Section 5 Title</h3> -->
+                  <p class="nav__body">Sed sit amet justo sed odio tempus tempus. Vestibulum sed varius mi, sit amet condimentum lacus.</p>
+                </a>
+              </li>
+
+            </ul>
+          </nav>
+
+          <section class="section section1" id="section1">
+            <div class="title_box">
+                 <h2 class="title_one"> This would be some information about what the tool is and how it works. Or it can be some catcy text before the user search for LA.</h2>
+                  <div class="search__container">
+                      <input id = "citySearch" class="search__input" type="text" placeholder="Choose Your Area of Interest">
+                      
+                      <!-- <input list="browsers" id = "citySearch" name="myBrowser" />
+                      <datalist id="browsers">
+                        <option value="Chrome">
+                        <option value="Firefox">
+                        <option value="Internet Explorer">
+                        <option value="Opera">
+                        <option value="Safari">
+                        <option value="Microsoft Edge">
+                      </datalist> -->
+                      <p  onclick="getSubmitted()">[Submit]</p>
+                  </div>
+            </div>
+          </section>
+
+          <section class="section section2" id="optionMenu">
+            <div class="row">
+              <div class="column">
+
+                <button type="button" id="hide" class="learn-more" onclick="getData()">See and compare data</button>
+                <button type="button" id="hide" class="learn-more" onclick="location.href='#selectDataAnalyse'">See data and analyse</button>
+                
+              
+            </div>                              
+          </section>
+
+          <section class="section section2" id="selectDataCompare">
+            <div class="row">
+              <div class="column">
+                <div id = "checkboxList" style ="margin-left: 70vw; margin-top: 5vw; font-size:1vw;"">
+                    <!-- to be filled by function -->
+                </div>
+            </div>                              
+          </section>
+
+          <section class="section section2" id="section2">
+            <div class="row">
+              <div class="column">
+                  
+                <h2 id="LA_1" style= "text-align: center; display: none;">Local Authority Y</h2>
+                    <!-- <p id="infoOutput" style="font-size: 2vw; margin-left: 10vw; margin-top: 5vw;">
+                    </p>   -->
+                <div id="map"></div>
+                 
+
+                <button type="button" id="hide" class="learn-more" onclick="compare()">Compare with another LA/Add another LA</button>
+              </div>
+              <div class="column" id="second_LA" style="display: none; background: grey;">
+                <h2 style= "text-align: center;" >Local Authority X</h2>
+              </div>
+            </div>                              
+          </section>
+
+
+          <section class="section section2" id="section2">
+            <div class="row">
+              <div class="column">
+                <h2 id="LA_1" style= "text-align: center; display: none;">Local Authority Y</h2>
+                    <!-- <p id="infoOutput" style="font-size: 2vw; margin-left: 10vw; margin-top: 5vw;">
+                        
+                    </p>   -->
+                <div id="map"></div>
+                  <!-- <script>
+                    mapboxgl.accessToken = 'pk.eyJ1IjoibW9vemhhbnNoIiwiYSI6ImNqamE4cmlxeDM0ZjczcnMybjBkcDR5bW4ifQ.zRf5unVap1cQOgTanCrx8w';
+                  var map = new mapboxgl.Map({
+                  container: 'map', // container id
+                  style: 'mapbox://styles/mapbox/streets-v11', // style URL
+                  center: [-2.970957052850079, 56.473878357008594], // starting position [lng, lat]
+                  zoom: 12 // starting zoom
+                  });
+                  </script> -->
+
+                <button type="button" id="hide" class="learn-more" onclick="compare()">Compare with another LA/Add another LA</button>
+              </div>
+              <div class="column" id="second_LA" style="display: none; background: grey;">
+                <h2 style= "text-align: center;" >Local Authority X</h2>
+              </div>
+            </div>                              
+          </section>
+
+          <section class="section section3" id="section3">
+            Section 3
+          </section>
+
+          <section class="section section4" id="section4">
+            Section 4
+          </section>
+
+          <section class="section section5" id="section5">
+            Section 5
+          </section>
+
+          <section class="section section6" id="section6">
+            Section 6
+          </section>
+
+          
+
+          
+
+
+        </div>
+      </body>
+  <script type="text/javascript">
+        createDropDown();
+        var map = L.map('map').setView([54.342149, -3.220429], 6.3);
+        L.tileLayer('https://api.maptiler.com/maps/streets/{z}/{x}/{y}.png?key=O8yt3o89Bwxqryjky8Dl',{
+                    attribution: '<a href="https://www.maptiler.com/copyright/" target="_blank">&copy; MapTiler</a> <a href="https://www.openstreetmap.org/copyright" target="_blank">&copy; OpenStreetMap contributors</a>'
+                }).addTo(map);
+        var controls = L.control.layers().addTo(map);
+      function compare() {
+          document.getElementById("second_LA").style.display = "block";
+          document.getElementById("hide").style.display = "none";
+          document.getElementById("map").style.display = "none";
+          document.getElementById("LA_1").style.display = "block";
+
+
+
+        }
+  </script>
+
+</html>
